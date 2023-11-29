@@ -19,8 +19,8 @@ port (
 	dn_addr	: in  std_logic_vector(15 downto 0);
 	dn_data	: in  std_logic_vector(7 downto 0);
 	dn_wr	   : in  std_logic;
-   dn_din   : out  std_logic_vector(7 downto 0);
-   dn_nvram : in  std_logic
+    dn_din   : out  std_logic_vector(7 downto 0);
+    dn_nvram : in  std_logic
 
 	);
 end;
@@ -58,24 +58,26 @@ begin
 	cmos_cs  <= '1' when ADDR(15 downto 10) = "110011" else '0';
 	dl_cs <= '1' when (dn_addr(15 downto 10) = "110100") or (dn_nvram='1') else '0';
 	
-	
-	
 	-- cmos ram 
-	cmos_ram : entity work.dpram
-	generic map( dWidth => 8, aWidth => 10)
+	cmos_ram : entity work.dualport_2clk_ram --work.dpram generic map( dWidth => 8, aWidth => 10)
+	generic map 
+    (
+        ADDR_WIDTH   => 10,
+        DATA_WIDTH   => 8
+    )
 	port map
 	(
-		clk_a   => dn_clock,
-		we_a    => dn_wr and dl_cs,
-		addr_a  => dn_addr(9 downto 0),
-		d_a     => dn_data,
-		q_a     => dn_din,
+		clock_a   => dn_clock,
+		wren_a    => dn_wr and dl_cs,
+		address_a => dn_addr(9 downto 0),
+		data_a    => dn_data,
+		q_a       => dn_din,
 	
-		clk_b   => CLK,
-		addr_b  => ADDR(9 downto 0),
-		d_b     => DI,
-		we_b    => cmos_cs and WE,
-		q_b     => cmos_out
+		clock_b   => CLK,
+		address_b => ADDR(9 downto 0),
+		data_b    => DI,
+		wren_b    => cmos_cs and WE,
+		q_b       => cmos_out
 	);
 
 	DO  <= cmos_out when cmos_cs = '1' else ram_data;

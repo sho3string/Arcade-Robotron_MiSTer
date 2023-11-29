@@ -563,10 +563,9 @@ end
 // analyzer on the 6809 to determine how many cycles before a new instruction an interrupt (or /HALT & /DMABREQ)
 // had to be asserted to be noted instead of the next instruction running start to finish.  
 // 
+reg old_Q;
 always @(posedge clk)
 begin
-	reg old_Q;
-
 	old_Q <= Q;
 	if(old_Q & ~Q) begin
 		NMISample <= nNMI;
@@ -579,10 +578,10 @@ end
 
 
 reg rnRESET=0; // The latched version of /RESET, useful 1 clock after it's latched
+reg old_E;
 always @(posedge clk)
 begin
-	reg old_E;
-	
+
 	old_E <= E;
 	if(old_E & ~E) begin
 		 rnRESET <= nRESET;

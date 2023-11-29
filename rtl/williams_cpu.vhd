@@ -702,30 +702,40 @@ begin
 	 romd6_cs <= '1' when dl_addr(16 downto 9) = "01101011" else '0';
  
 	 -- cpu to video addr decoder
-	 cpu_video_addr_decoder : work.dpram generic map (aWidth => 9, dWidth => 8)
+	 cpu_video_addr_decoder : entity work.dualport_2clk_ram --work.dpram generic map (aWidth => 9, dWidth => 8)
+	 generic map 
+     (
+        ADDR_WIDTH   => 9,
+        DATA_WIDTH   => 8
+     )
 	 port map
 	 (
-	 	clk_a  => dl_clock,
-	 	we_a   => dl_wr and romd4_cs,
-	 	addr_a => dl_addr(8 downto 0),
-	 	d_a    => dl_data,
+	 	clock_a   => dl_clock,
+	 	wren_a    => dl_wr and romd4_cs,
+	 	address_a => dl_addr(8 downto 0),
+	 	data_a    => dl_data,
  
-	 	clk_b  => not clock,
-	 	addr_b => decoder_4_in,
+	 	clock_b  => not clock,
+	 	address_b => decoder_4_in,
 	 	q_b    => pseudo_address
 	 );
 
 	 -- video scan addr decoder
-	 video_scan_addr_decoder : work.dpram generic map (aWidth => 9, dWidth => 8)
+	 video_scan_addr_decoder : entity work.dualport_2clk_ram -- work.dpram generic map (aWidth => 9, dWidth => 8)
+	 generic map 
+     (
+        ADDR_WIDTH   => 9,
+        DATA_WIDTH   => 8
+     )
 	 port map
 	 (
-	 	clk_a  => dl_clock,
-	 	we_a   => dl_wr and romd6_cs,
-	 	addr_a => dl_addr(8 downto 0),
-	 	d_a    => dl_data,
+	 	clock_a  => dl_clock,
+	 	wren_a   => dl_wr and romd6_cs,
+	 	address_a => dl_addr(8 downto 0),
+	 	data_a    => dl_data,
  
-	 	clk_b  => not clock,
-	 	addr_b => decoder_6_in,
+	 	clock_b  => not clock,
+	 	address_b => decoder_6_in,
 	 	q_b    => video_prom_address
 	 ); 
 
@@ -853,7 +863,7 @@ begin
                         not SIN_BOMB &
                         not SIN_FIRE;
 
-    widget_pia: work.pia6821
+    widget_pia: entity work.pia6821
         port map(
 		    rst => reset,
             clk => clock,
