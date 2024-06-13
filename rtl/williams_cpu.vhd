@@ -705,6 +705,7 @@ begin
 	 cpu_video_addr_decoder : entity work.dualport_2clk_ram --work.dpram generic map (aWidth => 9, dWidth => 8)
 	 generic map 
      (
+        FALLING_A    => TRUE,
         ADDR_WIDTH   => 9,
         DATA_WIDTH   => 8
      )
@@ -724,6 +725,7 @@ begin
 	 video_scan_addr_decoder : entity work.dualport_2clk_ram -- work.dpram generic map (aWidth => 9, dWidth => 8)
 	 generic map 
      (
+        FALLING_A    => TRUE,
         ADDR_WIDTH   => 9,
         DATA_WIDTH   => 8
      )

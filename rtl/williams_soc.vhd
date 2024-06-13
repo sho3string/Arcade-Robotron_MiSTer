@@ -75,7 +75,6 @@ port (
 	
 	pause            : in    std_logic;
 	
-	dn_clk_i         : in    std_logic;
 	dl_clock         : in    std_logic;
 	dl_addr          : in    std_logic_vector(16 downto 0);
 	dl_data          : in    std_logic_vector(7 downto 0);
@@ -246,7 +245,7 @@ port map (
 snd_rom : entity work.dualport_2clk_ram  --work.dpram generic map( dWidth => 8, aWidth => 12)
 generic map 
 (       
-    FALLING_A    => TRUE,
+    FALLING_B    => TRUE,
     ADDR_WIDTH   => 12,
     DATA_WIDTH   => 8
 )
@@ -255,8 +254,7 @@ port map(
 	address_a  => snd_addr(11 downto 0),
 	q_a        => snd_do,
 	
-	--clock_b    => dl_clock,
-	clock_b    => dn_clk_i,
+	clock_b    => dl_clock,
 	wren_b     => snd_rom_we,
 	address_b  => dl_addr(11 downto 0),
 	data_b     => dl_data
@@ -265,17 +263,16 @@ port map(
 spch_rom : entity work.dualport_2clk_ram -- work.dpram generic map( dWidth => 8, aWidth => 14)
 generic map 
 (       
-    FALLING_A    => TRUE,
+    FALLING_B    => TRUE,
     ADDR_WIDTH   => 14,
     DATA_WIDTH   => 8
 )
 port map(
 	clock_a    => clock,
-	addrESS_a  => snd_addr,
+	address_a  => snd_addr,
 	q_a        => spch_do,
 	
-	--clock_b    => dl_clock,
-	clock_b    => dn_clk_i,
+	clock_b    => dl_clock,
 	wren_b     => spch_rom_we,
 	address_b  => (dl_addr(13 downto 12) - "10") & dl_addr(11 downto 0),
 	data_b     => dl_data
